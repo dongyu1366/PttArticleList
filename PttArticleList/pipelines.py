@@ -8,7 +8,6 @@ import sqlite3
 from scrapy.exceptions import DropItem
 
 
-# 將資料存入資料庫
 class PttarticlelistPipeline(object):
 	def open_spider(self, spider):
 		self.conn = sqlite3.connect('./database/beauty.sqlite')
@@ -39,7 +38,6 @@ class PttarticlelistPipeline(object):
 
 
 
-# 移除已被刪除的文章
 class DropItemPipeline(object):
     def process_item(self, item, spider):
         if item['title']:

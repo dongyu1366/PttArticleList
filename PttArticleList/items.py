@@ -9,8 +9,6 @@ import scrapy
 
 
 class PttarticlelistItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
     nrec = scrapy.Field()   # number of push
     title = scrapy.Field()
     author = scrapy.Field()
