@@ -13,12 +13,13 @@ class PttarticlelistPipeline(object):
 	def open_spider(self, spider):
 		self.conn = sqlite3.connect('./database/beauty.sqlite')
 		self.cur = self.conn.cursor()
+		# 新增table，多設置一個id欄位為primary key
 		self.cur.execute('''create table if not exists beauty_tb(
-                            nrec varchar(100),
-                            title varchar(100),
-                            author varchar(100),
-                            day varchar(100),
-                            href varchar(500)
+                            nrec text,
+                            title text,
+                            author text,
+                            day text,
+                            url text primary key
                             )''')
                 
 	def close_spider(self, spider):
@@ -26,16 +27,13 @@ class PttarticlelistPipeline(object):
 		self.conn.close()
 
 	def process_item(self, item, spider):
-		col = ','.join(item.keys())
-		placeholder = ','.join(len(item) * '?')
-		sql = 'insert into beauty_tb({}) values({})'
-		self.cur.execute("insert into beauty_tb values(?,?,?,?,?)",(
-							item['nrec'],
-							item['title'],
-							item['author'],
-							item['day'],
-							item['href']
-		))
+		self.cur.execute("insert into beauty_tb (nrec, title, author, day, url) values(?,?,?,?,?) on conflict(url) do update set nrec=excluded.nrec",(
+					item['nrec'],
+					item['title'],
+					item['author'],
+					item['day'],
+					item['url']
+					))
 		return item
 
 

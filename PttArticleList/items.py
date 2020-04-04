@@ -15,5 +15,4 @@ class PttarticlelistItem(scrapy.Item):
     title = scrapy.Field()
     author = scrapy.Field()
     day = scrapy.Field()
-    href = scrapy.Field()
-
+    url = scrapy.Field()

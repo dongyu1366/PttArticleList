@@ -9,7 +9,7 @@ class BeautySpider(scrapy.Spider):
     start_urls = ['https://www.ptt.cc/bbs/Beauty/index.html']
 
     count = 0
-    count_max = 5   # 調整要爬幾頁
+    count_max = 3   # 調整要爬幾頁
 
     def parse(self, response):
         href = 'https://www.ptt.cc/bbs/Beauty/index.html'
@@ -23,7 +23,7 @@ class BeautySpider(scrapy.Spider):
             beauty_item['title'] = quote.css('div.title a::text').get()                                     # 文章標題 
             beauty_item['author'] = quote.css('div.meta div.author::text').get()                            # 作者
             beauty_item['day'] = quote.css('div.meta div.date::text').get()                                 # 發文日期
-            beauty_item['href'] = 'https://www.ptt.cc' + str(quote.css('div.title a::attr(href)').get())    # 頁面連結
+            beauty_item['url'] = 'https://www.ptt.cc' + str(quote.css('div.title a::attr(href)').get())    # 頁面連結
 
             yield beauty_item
         
