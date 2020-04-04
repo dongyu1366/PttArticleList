@@ -9,28 +9,28 @@ class BeautySpider(scrapy.Spider):
     start_urls = ['https://www.ptt.cc/bbs/Beauty/index.html']
 
     count = 0
-    count_max = 3   # 調整要爬幾頁
+    count_max = 3   # max pages to crawl
 
     def parse(self, response):
         href = 'https://www.ptt.cc/bbs/Beauty/index.html'
-        yield scrapy.Request(url=href, cookies={'over18': '1'}, callback=self.parse_list)    # 加入cookie，以通過年齡驗證
+        yield scrapy.Request(url=href, cookies={'over18': '1'}, callback=self.parse_list)    # add cookies to pass age verification
 
     def parse_list(self, response):
-        # 獲取本頁所有文章的清單
+        # get list of all articles on current page
         for quote in response.css('div.r-ent'):
             beauty_item = PttarticlelistItem()
-            beauty_item['nrec'] = quote.css('div.nrec span::text').get()                                    # 推噓數
-            beauty_item['title'] = quote.css('div.title a::text').get()                                     # 文章標題 
-            beauty_item['author'] = quote.css('div.meta div.author::text').get()                            # 作者
-            beauty_item['day'] = quote.css('div.meta div.date::text').get()                                 # 發文日期
-            beauty_item['url'] = 'https://www.ptt.cc' + str(quote.css('div.title a::attr(href)').get())    # 頁面連結
+            beauty_item['nrec'] = quote.css('div.nrec span::text').get()                                    # number of push
+            beauty_item['title'] = quote.css('div.title a::text').get()                                     # title of the article 
+            beauty_item['author'] = quote.css('div.meta div.author::text').get()                            # author of the article
+            beauty_item['date'] = quote.css('div.meta div.date::text').get()                                # date
+            beauty_item['url'] = 'https://www.ptt.cc' + str(quote.css('div.title a::attr(href)').get())     # url of athe article
 
             yield beauty_item
         
-        # 獲取下一頁的URL
+        # get URL of next page
         previous_page = response.xpath('//*[@id="action-bar-container"]/div/div[2]/a[2]/@href').get()
         self.count += 1
-        # 用來判斷是否爬完指定的頁數
+        # should keep get URL of next page or not
         if self.count < self.count_max:
             if previous_page is not None:
                 previous_page = response.urljoin(previous_page)
